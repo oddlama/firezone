@@ -195,7 +195,7 @@ defmodule Web.Sites.Show do
       </:action>
 
       <:help :if={@group.managed_by == :system and @group.name == "Internet"}>
-        The Internet Site is a specialized Site used to host gateways that tunnel traffic that doesn't match any specific Resource.
+        The Internet Site is a dedicated Site for traffic that does not match any specific Resource.
       </:help>
 
       <:content>
@@ -303,7 +303,7 @@ defmodule Web.Sites.Show do
                       class={[link_style()]}
                       navigate={~p"/#{@account}/sites/#{@group}/new_token"}
                     >
-                      Deploy a gateway to the Internet site.
+                      Deploy a Gateway to the Internet Site.
                     </.link>
                   </span>
                   <span :if={is_nil(@group.deleted_at) and @group.managed_by == :account}>
@@ -311,7 +311,7 @@ defmodule Web.Sites.Show do
                       class={[link_style()]}
                       navigate={~p"/#{@account}/sites/#{@group}/new_token"}
                     >
-                      Deploy a gateway to connect resources.
+                      Deploy a Gateway to connect Resources.
                     </.link>
                   </span>
                 </div>

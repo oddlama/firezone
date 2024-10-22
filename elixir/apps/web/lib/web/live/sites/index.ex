@@ -214,7 +214,7 @@ defmodule Web.Sites.Index do
 
       <:action :if={Domain.Accounts.internet_resource_enabled?(@account)}>
         <.edit_button navigate={~p"/#{@account}/sites/#{internet_gateway_group}"}>
-          Manage Internet Tunneling
+          Manage Full-route Tunneling
         </.edit_button>
       </:action>
 

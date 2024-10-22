@@ -105,12 +105,12 @@ defmodule Web.Sites.Gateways.Index do
                 No gateways to display.
                 <span :if={@group.managed_by == :system and @group.name == "Internet"}>
                   <.link class={[link_style()]} navigate={~p"/#{@account}/sites/#{@group}/new_token"}>
-                    Deploy a gateway to the Internet site.
+                    Deploy a Gateway to the Internet Site.
                   </.link>
                 </span>
                 <span :if={is_nil(@group.deleted_at) and @group.managed_by == :account}>
                   <.link class={[link_style()]} navigate={~p"/#{@account}/sites/#{@group}/new_token"}>
-                    Deploy a gateway to connect resources.
+                    Deploy a Gateway to connect Resources.
                   </.link>
                 </span>
               </div>
