@@ -219,7 +219,7 @@ defmodule Web.Sites.Index do
       </:action>
 
       <:help>
-        This is a specialized Site used to host Gateways that tunnel traffic that does not match any Resource.
+        This is a dedicated Site for traffic that does not match any specific Resource. Deploy Gateways here to enable full-route tunneling.
       </:help>
 
       <:content></:content>
