@@ -1920,6 +1920,7 @@ dependencies = [
  "firezone-logging",
  "flume",
  "futures",
+ "gat-lending-iterator",
  "hex-literal",
  "ip-packet",
  "ip_network",
@@ -2211,6 +2212,7 @@ dependencies = [
  "futures",
  "futures-bounded",
  "futures-util",
+ "gat-lending-iterator",
  "glob",
  "hex",
  "ip-packet",
@@ -2455,6 +2457,12 @@ checksum = "c31b6d751ae2c7f11320402d34e41349dd1016f8d5d45e48c4312bc8625af50c"
 dependencies = [
  "byteorder",
 ]
+
+[[package]]
+name = "gat-lending-iterator"
+version = "0.1.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c9af1174056216fca07a0c9585aed69d46aefb1107721ea30c379660329443c7"
 
 [[package]]
 name = "gdk"
@@ -5925,7 +5933,10 @@ dependencies = [
 name = "socket-factory"
 version = "0.1.0"
 dependencies = [
+ "derive_more 1.0.0",
  "firezone-logging",
+ "gat-lending-iterator",
+ "lockfree-object-pool",
  "quinn-udp",
  "socket2",
  "tokio",
@@ -7800,7 +7811,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.48.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
