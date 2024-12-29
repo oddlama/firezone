@@ -2209,6 +2209,7 @@ dependencies = [
  "domain",
  "firezone-logging",
  "firezone-relay",
+ "flume",
  "futures",
  "futures-bounded",
  "futures-util",
