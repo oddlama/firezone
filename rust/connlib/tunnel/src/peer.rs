@@ -343,20 +343,7 @@ impl ClientOnGateway {
         Ok(packet)
     }
 
-    pub fn translate_outbound(
-        &mut self,
-        packet: IpPacket,
-        now: Instant,
-    ) -> anyhow::Result<IpPacket> {
-        self.ensure_allowed_src(&packet)?;
-        self.ensure_allowed_dst(&packet)?;
-
-        let packet = self.transform_network_to_tun(packet, now)?;
-
-        Ok(packet)
-    }
-
-    pub fn translate_inbound(
+    fn transform_tun_to_network(
         &mut self,
         packet: IpPacket,
         now: Instant,
@@ -379,6 +366,29 @@ impl ClientOnGateway {
             .translate_source(self.ipv4, self.ipv6, proto, ip)
             .context("Failed to translate packet to new source")?;
         packet.update_checksum();
+
+        Ok(packet)
+    }
+
+    pub fn translate_outbound(
+        &mut self,
+        packet: IpPacket,
+        now: Instant,
+    ) -> anyhow::Result<IpPacket> {
+        self.ensure_allowed_src(&packet)?;
+        self.ensure_allowed_dst(&packet)?;
+
+        let packet = self.transform_network_to_tun(packet, now)?;
+
+        Ok(packet)
+    }
+
+    pub fn translate_inbound(
+        &mut self,
+        packet: IpPacket,
+        now: Instant,
+    ) -> anyhow::Result<IpPacket> {
+        let packet = self.transform_tun_to_network(packet, now)?;
 
         Ok(packet)
     }
