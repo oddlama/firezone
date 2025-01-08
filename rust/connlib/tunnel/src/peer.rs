@@ -10,7 +10,7 @@ use chrono::{DateTime, Utc};
 use connlib_model::{ClientId, DomainName, GatewayId, ResourceId};
 use ip_network::{IpNetwork, Ipv4Network, Ipv6Network};
 use ip_network_table::IpNetworkTable;
-use ip_packet::IpPacket;
+use ip_packet::{IpPacket, Protocol, UnsupportedProtocol};
 use rangemap::RangeInclusiveSet;
 
 use crate::utils::network_contains_network;
@@ -35,10 +35,10 @@ struct AllowRules {
 }
 
 impl FilterEngine {
-    fn is_allowed(&self, packet: &IpPacket) -> bool {
+    fn is_allowed(&self, protocol: Result<Protocol, UnsupportedProtocol>) -> bool {
         match self {
             FilterEngine::PermitAll => true,
-            FilterEngine::PermitSome(filter_engine) => filter_engine.is_allowed(packet),
+            FilterEngine::PermitSome(filter_engine) => filter_engine.is_allowed(protocol),
         }
     }
 
@@ -64,20 +64,13 @@ impl AllowRules {
         }
     }
 
-    fn is_allowed(&self, packet: &IpPacket) -> bool {
-        if let Some(tcp) = packet.as_tcp() {
-            return self.tcp.contains(&tcp.destination_port());
+    fn is_allowed(&self, proto: Result<Protocol, UnsupportedProtocol>) -> bool {
+        match proto {
+            Ok(Protocol::Tcp(port)) => self.tcp.contains(&port),
+            Ok(Protocol::Udp(port)) => self.udp.contains(&port),
+            Ok(Protocol::Icmp(_)) => self.icmp,
+            Err(_) => false,
         }
-
-        if let Some(udp) = packet.as_udp() {
-            return self.udp.contains(&udp.destination_port());
-        }
-
-        if packet.is_icmp() || packet.is_icmpv6() {
-            return self.icmp;
-        }
-
-        false
     }
 
     fn add_filters<'a>(&mut self, filters: impl IntoIterator<Item = &'a Filter>) {
@@ -416,10 +409,12 @@ impl ClientOnGateway {
             return Ok(());
         }
 
+        let protocol = packet.destination_protocol();
+
         if !self
             .filters
             .longest_match(dst)
-            .is_some_and(|(_, filter)| filter.is_allowed(packet))
+            .is_some_and(|(_, filter)| filter.is_allowed(protocol))
         {
             return Err(anyhow::Error::new(DstNotAllowed(dst)));
         };
