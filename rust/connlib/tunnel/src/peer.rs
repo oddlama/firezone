@@ -375,7 +375,7 @@ impl ClientOnGateway {
         packet: IpPacket,
         now: Instant,
     ) -> anyhow::Result<IpPacket> {
-        self.ensure_allowed_src(&packet)?;
+        self.ensure_allowed_src(packet.source())?;
         self.ensure_allowed_dst(&packet)?;
 
         let packet = self.transform_network_to_tun(packet, now)?;
@@ -397,11 +397,9 @@ impl ClientOnGateway {
         self.resources.contains_key(&resource)
     }
 
-    fn ensure_allowed_src(&self, packet: &IpPacket) -> anyhow::Result<()> {
-        let src = packet.source();
-
-        if !self.allowed_ips().contains(&src) {
-            return Err(anyhow::Error::new(SrcNotAllowed(src)));
+    fn ensure_allowed_src(&self, ip: IpAddr) -> anyhow::Result<()> {
+        if !self.allowed_ips().contains(&ip) {
+            return Err(anyhow::Error::new(SrcNotAllowed(ip)));
         }
 
         Ok(())
