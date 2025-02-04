@@ -8,15 +8,17 @@ if config_env() == :prod do
   ###############################
 
   config :domain, Domain.Repo,
-    database: compile_config!(:database_name),
-    username: compile_config!(:database_user),
-    hostname: compile_config!(:database_host),
-    port: compile_config!(:database_port),
-    password: compile_config!(:database_password),
-    pool_size: compile_config!(:database_pool_size),
-    ssl: compile_config!(:database_ssl_enabled),
-    ssl_opts: compile_config!(:database_ssl_opts),
-    parameters: compile_config!(:database_parameters)
+  [
+    {:database, compile_config!(:database_name)},
+    {:username, compile_config!(:database_user)},
+    {:port, compile_config!(:database_port)},
+    {:pool_size, compile_config!(:database_pool_size)},
+    {:ssl, compile_config!(:database_ssl_enabled)},
+    {:ssl_opts, compile_config!(:database_ssl_opts)},
+    {:parameters, compile_config!(:database_parameters)}
+  ]
+  ++ (if System.get_env("DATABASE_PASSWORD"), do: [{:password, compile_config!(:database_password)}], else: [])
+  ++ (if System.get_env("DATABASE_SOCKET_DIR"), do: [{:socket_dir, compile_config!(:database_socket_dir)}], else: [{:hostname, compile_config!(:database_host)}])
 
   config :domain, Domain.Tokens,
     key_base: compile_config!(:tokens_key_base),
