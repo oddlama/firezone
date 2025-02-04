@@ -1,5 +1,6 @@
 defmodule Web.SignUp do
   use Web, {:live_view, layout: {Web.Layouts, :public}}
+  require Logger
   alias Domain.{Auth, Accounts, Actors, Config}
   alias Web.Registration
 
@@ -358,7 +359,8 @@ defmodule Web.SignUp do
 
           {:noreply, assign(socket, form: to_form(changeset))}
 
-        {:error, :send_email, _reason, _effects_so_far} ->
+        {:error, :send_email, reason, _effects_so_far} ->
+          Logger.info("failed to send email", reason: inspect(reason))
           changeset =
             Ecto.Changeset.add_error(
               changeset,
